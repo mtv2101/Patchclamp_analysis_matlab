@@ -1,0 +1,4 @@
+function []= spont_tranfer_to_elphy
+i=ExpUnitName.Exp20080812U01.data.GBSP_1_26_30.RawDataTable{1,1};
+t=ExpUnitName.Exp20080812U01.data.GBSP_1_26_30.RawDataTable{1,1};
+sponttest=[t(:,1), i(:,1)];
