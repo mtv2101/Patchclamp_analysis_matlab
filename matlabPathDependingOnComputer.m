@@ -1,5 +1,5 @@
 function [ matlabPath, pathFileList ] = matlabPathDependingOnComputer()
-    matlabPath = '/Users/cedric/Bardy_Postdoc_Pasteur /Experiments_Analysis/';
-    pathFileList = '/Users/cedric/Bardy_Postdoc_Pasteur /Experiments_Analysis/File lists used for analysis/';
+    matlabPath = 'C:\Users\subgranules\Desktop\Postdoc DATA\slice_ephys\';
+    pathFileList = '\Users\subgranules\Desktop\Postdoc DATA\slice_ephys\file_lists';
 end
 

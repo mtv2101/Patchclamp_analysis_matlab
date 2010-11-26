@@ -472,7 +472,7 @@ function [nbFiles, filenames, filepaths, options, nbSweeps] = getFilenamesAndOpt
     file_single_path = get( handles.single_file_name_edit, 'string' ) ;
     %%%%%%%%%%%%%%%%%%%%% reading the file list %%%%%%%%%%%%%%%%%%%%%
     % ex : 20090210_3_07_29_ChR2_GB
-    if list_files_check == 1
+     if list_files_check == 1
         if exist( file_list_path, 'file' ) && ~exist( file_list_path, 'dir' )
             fid = fopen(file_list_path);
             fileList = textscan(fid, '%s %s %s %s %s %s %s') ;

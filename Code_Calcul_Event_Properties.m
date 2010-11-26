@@ -468,7 +468,7 @@ if doTPulse == 1
     TP_2 = 30;                  % Duration fit
     TP_3 = TP_1 + 0.99*TP_2;    % duration testpulse
     TP_2 = 0.8*TP_2 + TP_1;
-    
+
     time_points = [TP_1; TP_2; TP_3];
     % 1ere colonne de time_points = temps en ms
     % 2eme colonne de time_points = # de la ligne  correspondant au temps dans
@@ -490,6 +490,7 @@ else
 end
 
 %%%%%%%%%%% plot test-pulse over time from sweeps data in workspace %%%%%%%
+if doTPulse == 1
 figure
 mean_cap = mean(cell2mat(testPulseTime(:,2)),1);
 mean_rm = mean(cell2mat(testPulseTime(:,4)),1);
@@ -501,7 +502,7 @@ xlabel('Sweeps');ylabel('%change');
 legend(['Mean membrane capacitance = ',num2str(mean_cap),' (pF)'],...
     ['Mean membrane resistance = ',num2str(mean_rm),' (MOhm)'],...
     ['Mean access resistance = ',num2str(mean_ra),' (MOhm)']);
-
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %############################################################### ENDTpulse
 
@@ -519,10 +520,12 @@ if saveAllSweeps
 %         resultdata{i,4} = testPulseResults{3} ; % R^2 meanfit
 %         resultdata{i,5} = testPulseResults{4} ; % Rm
 %         resultdata{i,6} = testPulseResults{5} ; % Ra
+        if doTPulse == 1
          resultdata{i,3} = testPulseTime{i,2} ; % capa
          resultdata{i,4} = testPulseTime{i,3} ; % R^2 meanfit
          resultdata{i,5} = testPulseTime{i,4} ; % Rm
          resultdata{i,6} = testPulseTime{i,5} ; % Ra
+        end
         for k=1:nbStims
             resultdata{i,6+k} = ttpTable(i,k); % Time-to-peak for the k-th stim
             resultdata{i,6+nbStims+k} = riseTimeTable(i,k); % rise time for the k-th stim
