@@ -27,11 +27,11 @@ function varargout = test_pulse(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @test_pulse_OpeningFcn, ...
-                   'gui_OutputFcn',  @test_pulse_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @test_pulse_OpeningFcn, ...
+    'gui_OutputFcn',  @test_pulse_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -63,7 +63,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = test_pulse_OutputFcn(hObject, eventdata, handles) 
+function varargout = test_pulse_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -473,7 +473,7 @@ end
 
 % ######################################################## END settings ###
 if list_files_check == 1
-
+    
     % definie combien de colonnes seront lu en tant que caract�res
     str= '' ;
     
@@ -484,21 +484,21 @@ if list_files_check == 1
     
     
     path_file_list = file_list_path;
-
+    
     fid = fopen(path_file_list) ;
     file_list = textscan(fid, str) ;
     fclose(fid);
-
-
-    nb_fichiers = size(file_list{1},1) ;
-
-   
     
+    
+    nb_fichiers = size(file_list{1},1) ;
+    
+    
+    testPulseTime = cell(1,5);
     % read the text file raw and name the file and load it
     for ID=1:nb_fichiers
-        file_ID = strcat(file_list{1}{ID},'_',file_list{2}{ID},'_',file_list{3}{ID},'_',file_list{4}{ID}) ;
-        if nb_char_group > 4
-            for i=5:nb_char_group
+        file_ID = strcat(file_list{1}{ID},'_',file_list{2}{ID},'_',file_list{3}{ID},'_',file_list{4}{ID},'_',file_list{5}{ID}) ;
+        if nb_char_group > 5
+            for i=6:nb_char_group
                 file_ID = strcat(file_ID,'_',file_list{i}{ID}) ;
             end
         end
@@ -526,30 +526,46 @@ if list_files_check == 1
             time_points_list = [TP_1_list; TP_2_list; TP_3_list];
             
         end
-
-
+        
+        
         display(sprintf('loading %s ...',file_name )) ;
-
+        
         path = strcat(data_path, expdate,filesep(), file_name) ;
         raw_data = load(path) ;
-
+        
         display('data loaded');
         
         % The sweeps we don't want to be excluded from the analysis
         sweepsToKeep = 1:nb_sweeps; % here, all
         %%%%%%%%%%%%%%%%%%%%% ASCII raw Data file to Data matrix %%%%%%%%%%%%%%%%%%
-
+        
         [data, sweepSize, nb_sweeps] = preteatRawData( raw_data, nb_sweeps, sweepsToKeep );
-
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        testPulseTime = cell((nb_sweeps+1),5);
         for i = 4:(nb_sweeps+1)
-            testPulseTime(i,:) = test_pulse_analysis(file_name, data, data_to_save, time_points_list, sampling_rate_list, U_pulse_value_list, (i-3:i), to_do,ID, newHandleFigure);
+           a  = test_pulse_analysis(file_name, data, data_to_save, time_points_list, sampling_rate_list, U_pulse_value_list, (i-3:i), to_do,ID, newHandleFigure);
+           testPulseTime(i,:) = a(2,:);
+           clear a;
         end
-        % data_to_save = test_pulse_analysis(file_name, data, data_to_save, time_points_list,sampling_rate_list, U_pulse_value_list, nb_sweeps, to_do,ID, newHandleFigure) ;
+        
+        % %%%%%%%%%%% plot test-pulse over time from sweeps data in workspace %%%%%%%
+        figure
+        mean_cap = mean(cell2mat(testPulseTime(:,2)),1);
+        mean_rm = mean(cell2mat(testPulseTime(:,4)),1);
+        mean_ra = mean(cell2mat(testPulseTime(:,5)),1);
+        plot(cell2mat(testPulseTime(:,2))./mean_cap,'r');hold on;
+        plot(cell2mat(testPulseTime(:,4))./mean_rm,'b');hold on;
+        plot(cell2mat(testPulseTime(:,5))./mean_ra,'k');
+        xlabel('Sweeps');ylabel('%change');
+        legend(['Mean membrane capacitance = ',num2str(mean_cap),' (pF)'],...
+            ['Mean membrane resistance = ',num2str(mean_rm),' (MOhm)'],...
+            ['Mean access resistance = ',num2str(mean_ra),' (MOhm)']);        
+        clear testPulseTime
     end
-
-
-
+    
+    
+    
 elseif single_file_check == 1
     
     temp = getfield(handles, 'single_file_name_edit') ;
@@ -562,19 +578,19 @@ elseif single_file_check == 1
     file_ID = strcat(file_list{1},'_',file_list{2},'_',file_list{3},'_',file_list{4}) ;
     if nb_char_group > 4
         for i=5:nb_char_group
-                file_ID = strcat(file_ID,'_',file_list{i}) ;
+            file_ID = strcat(file_ID,'_',file_list{i}) ;
         end
     end
     
-    file_name = strcat(file_ID, '.asc'); 
+    file_name = strcat(file_ID, '.asc');
     expdate = file_list{1} ;
     nb_sweeps = str2double( file_list{4}) ;
-
+    
     display(strcat('loading.',file_name,'...')) ;
     
     display(path);
     raw_data = load(path) ;
-
+    
     display('data loaded')
     ID = 1 ;
     
@@ -582,14 +598,17 @@ elseif single_file_check == 1
     sweepsToKeep = getSweepRange( sweep_range, nb_sweeps );
     
     %%%%%%%%%%%%%%%%%%%%% ASCII raw Data file to Data matrix %%%%%%%%%%%%%%%%%%
-
-   [data, sweepSize, nb_sweeps] = preteatRawData( raw_data, nb_sweeps, sweepsToKeep );
-
+    
+    [data, sweepSize, nb_sweeps] = preteatRawData( raw_data, nb_sweeps, sweepsToKeep );
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-%    data_to_save = test_pulse_analysis(file_name, data, data_to_save, time_points, sampling_rate, U_pulse_value, nb_sweeps, to_do,ID, newHandleFigure ) ;
+    %    data_to_save = test_pulse_analysis(file_name, data, data_to_save, time_points, sampling_rate, U_pulse_value, nb_sweeps, to_do,ID, newHandleFigure ) ;
+    testPulseTime = cell((nb_sweeps+1),5);
     for i = 4:(nb_sweeps+1)
-        testPulseTime(i,:) = test_pulse_analysis(file_name, data, data_to_save, time_points_list, sampling_rate_list, U_pulse_value_list, (i-3:i), to_do,ID, newHandleFigure);
+        a  = test_pulse_analysis(file_name, data, data_to_save, time_points_list, sampling_rate_list, U_pulse_value_list, (i-3:i), to_do,ID, newHandleFigure);
+        testPulseTime(i,:) = a(2,:);
+        clear a;
     end
 end
 
@@ -597,7 +616,7 @@ to_save = genvarname(save_file, who) ;
 if to_do(3) == 1
     display('saving...')
     eval([to_save ' = data_to_save;']);
-   
+    
     save_path = strcat(save_path, save_file) ;
     save(save_path, save_file) ;
     
@@ -608,19 +627,6 @@ display('registering result in the workspace ...') ;
 assignin( 'base', to_save, data_to_save );
 
 display('done') ;
-
-%%%%%%%%%%% plot test-pulse over time from sweeps data in workspace %%%%%%%
-figure
-mean_cap = mean(cell2mat(testPulseTime(:,2)),1);
-mean_rm = mean(cell2mat(testPulseTime(:,4)),1);
-mean_ra = mean(cell2mat(testPulseTime(:,5)),1);
-plot(cell2mat(testPulseTime(:,2))./mean_cap,'r');hold on;
-plot(cell2mat(testPulseTime(:,4))./mean_rm,'b');hold on;
-plot(cell2mat(testPulseTime(:,5))./mean_ra,'k');
-xlabel('Sweeps');ylabel('%change');
-legend(['Mean membrane capacitance = ',num2str(mean_cap),' (pF)'],...
-    ['Mean membrane resistance = ',num2str(mean_rm),' (MOhm)'],...
-    ['Mean access resistance = ',num2str(mean_ra),' (MOhm)']);
 
 % --- Executes on button press in browseFolderSavePath.
 function browseFolderSavePath_Callback(hObject, eventdata, handles)
