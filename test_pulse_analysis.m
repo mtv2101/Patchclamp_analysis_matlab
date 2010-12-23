@@ -5,6 +5,8 @@ doFitTP = toDo(1);
 doPlot = toDo(2);
 doSave = toDo(3);
 
+doFitTP = 0;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% WORKING DATA %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The data, but recentered on 0 (data - mean(data))
 for i=1:nbSweeps+1
@@ -153,6 +155,9 @@ if doFitTP
     display( sprintf( 'Access resistance (MOhm) : \t %f', Ra ) );      % MOhm
     display( sprintf( 'Membran resistance (MOhm) : \t %f', Rm ) );     % MOhm
     
+else 
+    capa = 1; %value pad
+    rsquare_fit_TestPulse1 = 1; %value pad
 end
 
 % ########################################################## END fit ###
@@ -197,16 +202,16 @@ if doPlot
 end
 
 if doSave
-    if doFitTP
+    %if doFitTP
         data_to_save{ID+1,1} = file_name ;
         data_to_save{ID+1,2} = capa ;
         data_to_save{ID+1,3} = rsquare_fit_TestPulse1 ;
         data_to_save{ID+1,4} = Rm ;
         data_to_save{ID+1,5} = Ra ;
         
-    else
-        display('Nothing to save !') ;
-    end
+%     else
+%         display('Nothing to save !') ;
+%     end
 end
 
 rep = data_to_save ;

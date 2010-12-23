@@ -53,13 +53,13 @@ guidata(hObject, handles);
 % Default path
 [p1,p2] = matlabPathDependingOnComputer();
 temp = getfield(handles, 'save_path_edit') ;
-set(temp, 'string', strcat( p1, 'Matlab2008directory/')  ) ;
+set(temp, 'string', strcat( p1, '/Users/cedric/Desktop/data/slice_ephys')  ) ;
 temp = getfield(handles, 'file_list_path_edit') ;
 set(temp, 'string', strcat( p2, 'file_list1.txt') );
 temp = getfield(handles, 'path_raw_data_edit') ;
-set(temp, 'string', strcat( p1, 'Data_Electrophy/ASCII_ChR2_Evoked GABA_mini/')  ) ;
+set(temp, 'string', strcat( p1, '/Users/cedric/Desktop/data/slice_ephys')  ) ;
 temp = getfield(handles, 'single_file_name_edit');
-set(temp, 'string', strcat( p1, 'Data_Electrophy/ASCII_ChR2_Evoked GABA_mini/20100203/20100203_4_10_30_ChR2_GB.asc' ) );
+set(temp, 'string', strcat( p1, '/Users/cedric/Desktop/data/slice_ephys' ) );
 % Display the threshold gradient for peak detection
 displayThresholdGradient( handles );
 
@@ -390,6 +390,9 @@ for ID=1:nbFiles
     nbSweepRecords = numel(sweepsToKeep);
     nbRecordsAlready = size(sweepsData,1);
     nbFields = size(sweepsData,2);
+    if size(newdata,1)>nbSweeps
+        newdata = newdata(1:nbSweeps,:);
+    end
     for i=1:nbSweepRecords
         for j=1:nbFields
             [sweepsData{nbRecordsAlready+i, j}] = [newdata{i,j}];
@@ -397,7 +400,7 @@ for ID=1:nbFiles
     end
     nbRecordsAlready = size(meansData,1);
     for j=1:nbFields
-        [meansData{nbRecordsAlready+1, j}] = [newdata{nbSweepRecords+1,j}];
+        [meansData{nbRecordsAlready+1, j}] = [newdata{nbSweepRecords,j}];
     end
 
 end

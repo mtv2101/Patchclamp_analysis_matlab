@@ -21,10 +21,10 @@ function [iStart, iEnd, riseTime, amplitude] = getRiseTime( data, nbSweep, baseL
     maxValue = data( indexPeak, nbSweep );
     startValue = data( indexBegin, nbSweep );
 
-    if maxValue <= startValue
-        display( 'Invalid parameters for getRiseTime() : max is below the beginning' );
-        return;
-    end
+%     if maxValue <= startValue
+%         display( 'Invalid parameters for getRiseTime() : max is below the beginning' );
+%         return;0
+%     end
     
     amplitude = maxValue - baseLine;
     firstLevel = amplitude * percentBegin + baseLine;

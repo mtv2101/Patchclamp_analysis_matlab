@@ -14,8 +14,8 @@ sweepSize = nbLinesRD/nbSweeps ;
 pretreatedData = zeros( sweepSize, nbSweeps+2 );
 
 if int32(sweepSize) ~= sweepSize
-    display('Error : sweeps have not all the same length');
-    return;
+   display('Error : sweeps have not all the same length');
+   return;
 else
     sweepSize = int32(sweepSize) ;
 end
